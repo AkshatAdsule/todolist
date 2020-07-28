@@ -7,10 +7,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.get('/', function (req, res) {
     var today = new Date();
 
-    if(today.getDay() == 2 || today.getDay() == 0) {
+    if(today.getDay() == 6 || today.getDay() == 0) {
         res.send("<h1>It's the weekend!</h1>");
     } else {
-        res.send("<h1>I have to work.</h1>");
+        res.sendFile(__dirname + "/index.html")
     }
 });
 
