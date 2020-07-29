@@ -8,6 +8,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.set('view engine', 'ejs');
+app.use(express.static("public"))
 
 
 app.get('/', function (req, res) {
@@ -25,8 +26,11 @@ app.get('/', function (req, res) {
 });
 
 app.post('/', function (req, res) {
-    tasks.push(req.body.task);
-    console.log(`%cAdded task: ${req.body.task}`, "color:green; font-size:14px");
+    let task = req.body.task;
+    if (task !== "") {
+        tasks.push(req.body.task);
+        console.log(`%cAdded task: ${req.body.task}`, "color:green; font-size:14px");
+    }
     res.redirect('/');
 });
 

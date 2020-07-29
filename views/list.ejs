@@ -4,18 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To Do List</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <h1> <%= day %>  </h1>
-    <ul>
-        <% tasks.forEach(element => { %>
-            <li><%= element %> </li>
-        <% }) %>
-    </ul>
+    <div class="box">
+        <h1 id="heading"> <%= day %>  </h1>
+    </div>
 
-    <form action="/" method="post">
-        <input type="text" name="task" placeholder="Enter task name.">
-        <button type="submit">Add task</button>
-    </form>
+    <div class="box">
+            <% tasks.forEach(element => { %>
+                <div class="item">
+                    <input type="checkbox">
+                    <p> <%= element %>  </p>
+                </div>
+            <% }) %>
+            <form class="item" action="/" method="post">
+                <input type="text" name="task" placeholder="New Task" autocomplete="off">
+                <button type="submit">+</button>
+            </form>
+    </div>
+
 </body>
 </html>
