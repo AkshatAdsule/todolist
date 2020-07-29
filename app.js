@@ -1,39 +1,35 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+let tasks = [];
+
 const app = express();
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.set('view engine', 'ejs');
+
 
 app.get('/', function (req, res) {
     let today = new Date();
-    let day = "";
-    switch(today.getDay()){
-        case 0: 
-            day = "Sunday";
-            break;
-        case 1: 
-            day = "Monday";
-            break;
-        case 2: 
-            day = "Tuesday";
-            break;
-        case 3: 
-            day = "Wednesday";
-            break;
-        case 4: 
-            day = "Thursday";
-            break;
-        case 5: 
-            day = "Friday";
-            break;
-        case 6: 
-            day = "Saturday";
-            break;
-    }
-    res.render("list", {kindOfDay: day});
+    let options = {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
+    };
+    let day = today.toLocaleDateString("en-US", options);
+    res.render("list", {
+        day: day,
+        tasks: tasks
+    });
 });
 
-app.listen(7000, function() {
+app.post('/', function (req, res) {
+    tasks.push(req.body.task);
+    console.log(`%cAdded task: ${req.body.task}`, "color:green; font-size:14px");
+    res.redirect('/');
+});
+
+app.listen(7000, function () {
     console.log("Server is running on port 7000");
 });

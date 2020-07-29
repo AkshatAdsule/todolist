@@ -6,6 +6,16 @@
     <title>To Do List</title>
 </head>
 <body>
-    <h1>Its a <%= kindOfDay %> </h1>
+    <h1> <%= day %>  </h1>
+    <ul>
+        <% tasks.forEach(element => { %>
+            <li><%= element %> </li>
+        <% }) %>
+    </ul>
+
+    <form action="/" method="post">
+        <input type="text" name="task" placeholder="Enter task name.">
+        <button type="submit">Add task</button>
+    </form>
 </body>
 </html>
