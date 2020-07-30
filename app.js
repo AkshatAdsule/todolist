@@ -35,7 +35,7 @@ app.post('/', function (req, res) {
             res.redirect('/work');
         } else {
             dayTasks.push(req.body.task);
-            console.log(`%cAdded task to day: ${req.body.task}`, "color:blue; font-size:20px");
+            console.log(`%cAdded task to day: ${req.body.task}`, "color:blue; font-size:20px")
             res.redirect('/');
         }
     }
