@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-let tasks = [];
+let dayTasks = [];
+let workTasks = []
 
 const app = express();
 app.use(bodyParser.urlencoded({
@@ -20,20 +21,36 @@ app.get('/', function (req, res) {
     };
     let day = today.toLocaleDateString("en-US", options);
     res.render("list", {
-        day: day,
-        tasks: tasks
+        listTitle: day,
+        tasks: dayTasks
     });
 });
 
 app.post('/', function (req, res) {
     let task = req.body.task;
     if (task !== "") {
-        tasks.push(req.body.task);
-        console.log(`%cAdded task: ${req.body.task}`, "color:green; font-size:14px");
+        if (req.body.list == "Work") {
+            workTasks.push(req.body.task);
+            console.log(`%cAdded task to work: ${req.body.task}`, "color:green; font-size:20px");
+            res.redirect('/work');
+        } else {
+            dayTasks.push(req.body.task);
+            console.log(`%cAdded task to day: ${req.body.task}`, "color:blue; font-size:20px");
+            res.redirect('/');
+        }
     }
-    res.redirect('/');
 });
 
+app.get('/work', function (req, res) {
+    res.render("list", {
+        listTitle: "Work",
+        tasks: workTasks
+    });
+});
+
+app.get('/about', function (req, res) {
+    res.render("about");
+});
 app.listen(7000, function () {
     console.log("Server is running on port 7000");
 });
