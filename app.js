@@ -1,12 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const date = require(__dirname + "/date.js");
+const mongoose = require('mongoose');
 
-console.log(date.getDate());
-
-const dayTasks = [];
-const workTasks = [];
-
+// set up a new express app that uses EJS and body-parser, with a public directory.
 const app = express();
 app.use(bodyParser.urlencoded({
     extended: true
@@ -14,11 +10,38 @@ app.use(bodyParser.urlencoded({
 app.set('view engine', 'ejs');
 app.use(express.static("public"))
 
+//set up mongoose and create task schema
+mongoose.connect('mongodb://localhost:27017/todolistDB', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+const taskSchema = {
+    name: String
+};
+const Task = mongoose.model('task', taskSchema);
+
+const task1 = new Task({
+    name: "Welcome to your todolist!"
+});
+const task2 = new Task({
+    name: "Add a task by clicking the + button."
+});
+const task3 = new Task({
+    name: "<-- press this to finish your task"
+});
+const defaultTasks = [task1, task2, task3];
+
+Task.insertMany(defaultTasks, function(err) {
+    if(err){
+        console.log(err);
+    }
+});
+
 
 app.get('/', function (req, res) {
-    let day = date.getDate();
     res.render("list", {
-        listTitle: day,
+        listTitle: "Today",
         tasks: dayTasks
     });
 });
