@@ -6,13 +6,15 @@
     </div>
 
     <div class="box">
-        <% tasks.forEach(element => { %>
-        <div class="item">
-            <input type="checkbox">
-            <p> <%= element %> </p>
-        </div>
+        <% tasks.forEach(task => { %>
+        <form action="/delete", method="POST">
+            <div class="item">
+                <input type="checkbox" name="checkbox" value="<%=task._id%>" onchange="this.form.submit()">
+                <p> <%= task.name %> </p>
+            </div>
+        </form>
         <% }) %>
-        <form class="item" action="/" method="post">
+        <form class="item" action="<%=listRoute%>" method="post">
             <input type="text" name="task" placeholder="New Task" autocomplete="off">
             <button type="submit" name="list" value=<%= listTitle %>>+</button>
         </form>

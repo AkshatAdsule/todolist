@@ -10,63 +10,103 @@ app.use(bodyParser.urlencoded({
 app.set('view engine', 'ejs');
 app.use(express.static("public"))
 
-//set up mongoose and create task schema
+//set up mongoose, create task schema, and add tutorial tasks
 mongoose.connect('mongodb://localhost:27017/todolistDB', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
 
 const taskSchema = {
-    name: String
+    name: String,
+    listName: String
 };
 const Task = mongoose.model('task', taskSchema);
 
-const task1 = new Task({
-    name: "Welcome to your todolist!"
+const tutorialTask1 = new Task({
+    name: "Welcome to your todolist!",
+    listName: '/'
 });
-const task2 = new Task({
-    name: "Add a task by clicking the + button."
+const tutorialTask2 = new Task({
+    name: "Add a task by clicking the + button.",
+    listName: '/'
 });
-const task3 = new Task({
-    name: "<-- press this to finish your task"
+const tutorialTask3 = new Task({
+    name: "<-- Press this to finish your task.",
+    listName: '/'
 });
-const defaultTasks = [task1, task2, task3];
-
-Task.insertMany(defaultTasks, function(err) {
-    if(err){
-        console.log(err);
-    }
-});
-
+const defaultTasks = [tutorialTask1, tutorialTask2, tutorialTask3];
 
 app.get('/', function (req, res) {
-    res.render("list", {
-        listTitle: "Today",
-        tasks: dayTasks
+    Task.find({listName: '/'}, function (err, foundTasks) {
+        if(foundTasks.length == 0) {
+            Task.insertMany(defaultTasks, function(err) {
+                if(err){
+                    console.log(err);
+                } else {
+                    console.log("Added items to db");
+                }
+            });
+            res.redirect('/');
+        } else {
+            res.render("list", {
+                listTitle: "Today",
+                tasks: foundTasks,
+                listRoute: "/"
+            });
+        }
     });
 });
 
 app.post('/', function (req, res) {
     let task = req.body.task;
     if (task !== "") {
-        if (req.body.list == "Work") {
-            workTasks.push(req.body.task);
-            console.log(`%cAdded task to work: ${req.body.task}`, "color:green; font-size:20px");
-            res.redirect('/work');
-        } else {
-            dayTasks.push(req.body.task);
-            console.log(`%cAdded task to day: ${req.body.task}`, "color:blue; font-size:20px");
-            res.redirect('/');
+        const newTask = new Task({
+            name: task,
+            listName: '/'
+        });
+        newTask.save();
+        res.redirect('/');
         }
     }
-});
+);
 
-app.get('/work', function (req, res) {
-    res.render("list", {
-        listTitle: "Work",
-        tasks: workTasks
+app.post('/delete', function(req,res) {
+    const name = req.body.checkbox;
+    console.log(name);
+    Task.deleteOne({_id: name}, function(err){
+        console.log(err);
+    })
+    res.redirect('/')
+})
+
+app.get('/:listName', function(req, res) {
+    const listName = req.params.listName;
+    Task.find({listName: listName}, function(err, foundTasks) {
+        if(err) {
+            console.log(err);
+        } else {
+            res.render("list", {
+                listTitle: listName,
+                tasks: foundTasks,
+                listRoute: '/' + listName
+            });
+        }
     });
 });
+
+app.post('/:listName', function (req, res) {
+    let task = req.body.task;
+    let listName = req.params.listName
+    if (task !== "") {
+        const newTask = new Task({
+            name: task,
+            listName: listName
+        });
+        newTask.save();
+        res.redirect('/' + listName);
+        }
+    }
+);
 
 app.get('/about', function (req, res) {
     res.render("about");
