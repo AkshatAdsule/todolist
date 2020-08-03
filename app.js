@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const atlasKey = "SQzUbT6AtldBDA9l";
+
 // set up a new express app that uses EJS and body-parser, with a public directory.
 const app = express();
 app.use(bodyParser.urlencoded({
@@ -11,7 +13,7 @@ app.set('view engine', 'ejs');
 app.use(express.static("public"))
 
 //set up mongoose, create task schema, and add tutorial tasks
-mongoose.connect('mongodb://localhost:27017/todolistDB', {
+mongoose.connect(`mongodb+srv://admin-akshat:${atlasKey}@todolist.ba0k7.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -111,6 +113,6 @@ app.post('/:listName', function (req, res) {
 app.get('/about', function (req, res) {
     res.render("about");
 });
-app.listen(7000, function () {
-    console.log("Server is running on port 7000");
+app.listen(process.env.PORT || 7000, function () {
+    console.log("Server is running.");
 });
