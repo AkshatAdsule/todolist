@@ -73,13 +73,22 @@ app.post('/', function (req, res) {
 );
 
 app.post('/delete', function(req,res) {
-    const name = req.body.checkbox;
-    console.log(name);
-    Task.deleteOne({_id: name}, function(err){
-        console.log(err);
-    })
-    res.redirect('/')
-})
+    const id = req.body.checkbox;
+    let url = '/';
+    console.log(req.body);
+    Task.findById(id, async function(err, doc) {
+        if(err){
+            console.log(err);
+        } else 
+        url = "/" + await doc.listName
+        res.redirect(url)
+    });
+    Task.deleteOne({_id: id}, function(err) {
+        if(err) {
+            console.log(err);
+        }
+    });
+});
 
 app.get('/:listName', function(req, res) {
     const listName = req.params.listName;
