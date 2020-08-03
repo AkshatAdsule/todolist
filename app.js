@@ -44,8 +44,6 @@ app.get('/', function (req, res) {
             Task.insertMany(defaultTasks, function(err) {
                 if(err){
                     console.log(err);
-                } else {
-                    console.log("Added items to db");
                 }
             });
             res.redirect('/');
@@ -74,14 +72,16 @@ app.post('/', function (req, res) {
 
 app.post('/delete', function(req,res) {
     const id = req.body.checkbox;
-    let url = '/';
-    console.log(req.body);
     Task.findById(id, async function(err, doc) {
         if(err){
             console.log(err);
         } else 
-        url = "/" + await doc.listName
-        res.redirect(url)
+        if(doc.listName == '/') {
+            res.redirect('/')
+        } else {
+            let url = "/" + await doc.listName
+            res.redirect(url)
+        }
     });
     Task.deleteOne({_id: id}, function(err) {
         if(err) {
@@ -122,6 +122,4 @@ app.post('/:listName', function (req, res) {
 app.get('/about', function (req, res) {
     res.render("about");
 });
-app.listen(process.env.PORT || 7000, function () {
-    console.log("Server is running.");
-});
+app.listen(process.env.PORT || 7000);
