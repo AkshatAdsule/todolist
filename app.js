@@ -13,7 +13,7 @@ app.set('view engine', 'ejs');
 app.use(express.static("public"))
 
 //set up mongoose, create task schema, and add tutorial tasks
-mongoose.connect(`mongodb+srv://admin-akshat:${atlasKey}@todolist.ba0k7.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority`, {
+mongoose.connect(`mongodb+srv://admin-akshat:${atlasKey}@todolist.ba0k7.gcp.mongodb.net/todolist?retryWrites=true&w=majority`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
